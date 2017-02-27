@@ -4,7 +4,7 @@ WebVJ
 ![1](https://raw.githubusercontent.com/mattatz/WebVJ/master/captures/WebVJ_1.gif)
 
 WebVJ uses a web page structure as visual effect.
-This  was performed as [Beyond Code #3](https://www.super-deluxe.com/room/4258/).
+This was performed at [Beyond Code #3](https://www.super-deluxe.com/room/4258/).
 
 ## Demo
 
