@@ -8,7 +8,7 @@ This  was performed as [Beyond Code #3](https://www.super-deluxe.com/room/4258/)
 
 ## Demo
 
-[Demo](https://mattatz.github.io/WebVJ)
+[Demo](http://webvj.mattatz.org)
 
 ## Captures
 
