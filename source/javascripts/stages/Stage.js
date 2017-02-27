@@ -12,6 +12,7 @@ export default class Stage {
 
         this.gui = new dat.GUI();
 
+        /*
         this.gui.add({
             stage: -1
         }, "stage", {
@@ -20,6 +21,7 @@ export default class Stage {
         }).onChange((index) => {
             vj.next(index);
         });
+        */
     }
 
     init() {
@@ -39,38 +41,6 @@ export default class Stage {
 
     input(keyCode) {
         switch (keyCode) {
-        }
-    }
-
-    osc(address, data) {
-        switch(address) {
-            case "/posteffect":
-                var name = data[0];
-                if(!this.effects[name]) return;
-                this.updateUniform(this.effects[name].uniforms, data[1], data[2]);
-                break;
-        }
-    }
-
-    activate(mode) {
-    }
-
-    deactivate(mode) {
-    }
-
-    addModes(modes) {
-        var folder = this.gui.addFolder("modes");
-        for(var mode in modes) {
-            var callback = (mode) => {
-                return (flag) => {
-                    if(flag) {
-                        this.activate(mode);
-                    } else {
-                        this.deactivate(mode);
-                    }
-                };
-            };
-            folder.add(modes, mode).onChange(callback(mode));
         }
     }
 

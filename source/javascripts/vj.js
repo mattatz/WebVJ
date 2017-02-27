@@ -7,7 +7,7 @@ const resolution = {
     height: 768
 };
 
-let bpm = 120;
+let bpm = 75;
 
 export default class VJ {
 
@@ -16,10 +16,8 @@ export default class VJ {
 
         this.renderer = new THREE.WebGLRenderer({
             alpha: true
-            // antialias: true
         });
         var container = this.createContainer();
-        // this.setBackground(0xffffff, true);
         this.renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(this.renderer.domElement);
@@ -113,5 +111,5 @@ export default class VJ {
 
 }
 
-new VJ(0);
+new VJ(1);
 

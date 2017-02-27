@@ -5,14 +5,14 @@ const velocity = "textureVelocity";
 const rotation = "textureRotation";
 const position = "texturePosition";
 
-const Mode = {
+const DOMBoxParticleMode = {
     Init: 0,
-    Up: 1,
+    Field: 1,
     Sphere: 2,
     Model: 3,
 };
 
-export default class DOMBoxParticleSystem {
+class DOMBoxParticleSystem {
 
     constructor(renderer, count) {
         var size = Math.ceil(Math.sqrt(count));
@@ -25,7 +25,6 @@ export default class DOMBoxParticleSystem {
         this.rotVar = this.gpuCompute.addVariable(rotation, require("../../shaders/compute/domBox/rotation.frag"), null);
         this.posVar = this.gpuCompute.addVariable(position, require("../../shaders/compute/domBox/position.frag"), null);
 
-        // Add variable dependencies
         this.gpuCompute.setVariableDependencies(this.velVar, [this.velVar, this.posVar]);
         this.gpuCompute.setVariableDependencies(this.rotVar, [this.velVar, this.rotVar, this.posVar]);
         this.gpuCompute.setVariableDependencies(this.posVar, [this.velVar, this.posVar]);
@@ -33,21 +32,21 @@ export default class DOMBoxParticleSystem {
         var error = this.gpuCompute.init();
         this.setup();
 
-        this.velVar.material.uniforms.mode.value = Mode.Init;
+        this.velVar.material.uniforms.mode.value = DOMBoxParticleMode.Init;
         this.gpuCompute.compute();
 
-        this.velVar.material.uniforms.mode.value = Mode.Up;
+        this.velVar.material.uniforms.mode.value = DOMBoxParticleMode.Field;
     }
 
     setup() {
-        this.posVar.material.uniforms.throttle = { type: "f", value: 0.0 };
+        this.posVar.material.uniforms.throttle = { type: "f", value: 0.5 };
         this.posVar.material.uniforms.emitter = { type: "v2", value: new THREE.Vector3(3000, 1000) };
         this.posVar.material.uniforms.step = { type: "f", value: 0.0 };
 
         this.velVar.material.uniforms.speed = this.posVar.material.uniforms.speed = this.rotVar.material.uniforms.speed = { type:"f", value: 0.15 };
         this.velVar.material.uniforms.time = this.posVar.material.uniforms.time = this.rotVar.material.uniforms.time = { type:"f", value: 0.0 };
         this.velVar.material.uniforms.dt = this.posVar.material.uniforms.dt = this.rotVar.material.uniforms.dt = { type:"f", value: 0.0 };
-        this.velVar.material.uniforms.mode = this.posVar.material.uniforms.mode = this.rotVar.material.uniforms.mode = { type:"i", value: Mode.Init };
+        this.velVar.material.uniforms.mode = this.posVar.material.uniforms.mode = this.rotVar.material.uniforms.mode = { type:"i", value: DOMBoxParticleMode.Init };
 
         this.velVar.material.uniforms.noiseScale = { type: "v3", value: new THREE.Vector3(0.1, 0.1, 0.1) };
         this.velVar.material.uniforms.noiseSpeed = { type:"f", value: 0.5 };
@@ -56,7 +55,7 @@ export default class DOMBoxParticleSystem {
         this.velVar.material.uniforms.textureModel = this.posVar.material.uniforms.textureModel = { type:"t", value: null };
 
         // v2: (size, height)
-        this.velVar.material.uniforms.model = this.posVar.material.uniforms.model = { type:"v2", value: new THREE.Vector2(750, 800) };
+        this.velVar.material.uniforms.model = this.posVar.material.uniforms.model = { type:"v2", value: new THREE.Vector2(1200, 800) };
         this.velVar.material.uniforms.decay = { type:"f", value: 0.98 };
     }
 
@@ -104,6 +103,10 @@ export default class DOMBoxParticleSystem {
         this.velVar.material.uniforms.textureModel.value = texture;
     }
 
+    get size() {
+        return this.velVar.material.uniforms.model.value.x;
+    }
+
     set size(v) {
         this.velVar.material.uniforms.model.value.x = v;
     }
@@ -133,7 +136,6 @@ export default class DOMBoxParticleSystem {
     }
 
     update(dt, t) {
-        // this.velVar.material.uniforms.mode.value = Mode.Sphere;
         this.velVar.material.uniforms.dt.value = dt;
         this.velVar.material.uniforms.time.value = t;
 
@@ -141,3 +143,6 @@ export default class DOMBoxParticleSystem {
     }
 
 }
+
+export { DOMBoxParticleMode, DOMBoxParticleSystem }
+

@@ -6,10 +6,11 @@ import Building from "../objects/Building"
 import BuildingControl from "../objects/BuildingControl"
 import PolarCoordinate from "../objects/PolarCoordinate";
 import Grid from "../objects/Grid";
+
+import { DOMBoxParticleMode } from "../effects/DOMBoxParticleSystem";
 import DOMBoxParticle from "../objects/DOMBoxParticle";
 
 import GridLine from "../meshes/GridLine";
-import FluidSimulation from "../effects/FluidSimulation"
 
 import MathUtil from "../utils/MathUtil"
 
@@ -22,10 +23,16 @@ export default class TownStage extends Stage {
 
         var t0 = MathUtil.randomRange(0, Math.PI * 0.5);
         var t1 = MathUtil.randomRange(0, Math.PI * 2.0);
+
         this.polar = new PolarCoordinate(t0, t1, 2500);
 
         var folder = this.gui.addFolder("camera");
         folder.add(this, "randomize");
+
+        setInterval(() => {
+            this.randomize(false);
+        }, 5000);
+
         folder.add(this, "overlook");
         folder.add(this.polar, "radius", 100, 8000).name("distance");
         folder.add(this.polar, "theta0", 0, Math.PI * 0.5).name("θ");
@@ -50,7 +57,8 @@ export default class TownStage extends Stage {
     }
 
     init(pages) {
-        this.selected = 0;
+        this.selected = -1;
+
         this.pages = pages;
         this.pages.forEach((page) => {
             page.buildHierarchy();
@@ -70,49 +78,45 @@ export default class TownStage extends Stage {
         this.container.add(this.grid);
 
         var gridFolder = this.gui.addFolder("grid");
+        gridFolder.add(this.grid, "sync");
         gridFolder.add(this.grid, "noise");
         gridFolder.add(this.grid, "circle");
-
-        this.simulation = new FluidSimulation(this.renderer, 256);
-        this.simulation.active = false;
-
-        this.gridLine.material.uniforms.texturePressure.value = this.simulation.pressure;
-        this.gridLine.material.uniforms.textureVelocity.value = this.simulation.velocity;
 
         this.control = new BuildingControl();
         this.container.add(this.control);
 
         var buildingFolder = this.gui.addFolder("building");
-        buildingFolder .add({
+        buildingFolder.add(this.control, "sync");
+        buildingFolder.add({
             append: () => {
                 this.control.append(this.page, Math.floor(MathUtil.randomRange(1, 4)));
             }
         }, "append");
-        buildingFolder.add(this.control, "grow");
         buildingFolder.add(this.control, "destroy");
-        buildingFolder.add(this.control, "noise");
+        buildingFolder.add(this.control, "explode");
         buildingFolder.add(this.control, "duration", 500, 4000);
 
         this.particle = new DOMBoxParticle(this.renderer, this.pages);
         this.container.add(this.particle);
 
         var particleFolder = this.gui.addFolder("particle");
-        particleFolder.add(this.particle, "mode", [0, 1, 2, 3])
-        particleFolder.add(this.particle.system.velVar.material.uniforms.sphere.value, "x", 0.0, 1000.0).name("sphere height");
-        particleFolder.add(this.particle.system.velVar.material.uniforms.sphere.value, "y", 0.0, 1000.0).name("sphere size");
-        particleFolder.add(this.particle.system.velVar.material.uniforms.sphere.value, "z", 0.0, 1500.0).name("sphere noise");
-        particleFolder.add(this.particle.system.velVar.material.uniforms.sphere.value, "w", 0.0, 400.0).name("sphere intensity");
-        particleFolder.add(this.particle, "randomize")
-        particleFolder.add(this.particle, "throttle", 0.0, 1.0)
+
+        particleFolder.add(this.particle, "mode", DOMBoxParticleMode);
+        particleFolder.add(this.particle, "throttle", 0.0, 1.0);
         particleFolder.add(this.particle.mesh.material.uniforms.scale, "value", 0.1, 1.0).name("scale");
-    }
 
-    activate(mode) {
-        super.activate(mode);
-    }
+        var sphereFolder = particleFolder.addFolder("sphere");
+        sphereFolder.add(this.particle.system.velVar.material.uniforms.sphere.value, "z", 0.0, 1500.0).name("sphere noise");
+        sphereFolder.add(this.particle.system.velVar.material.uniforms.sphere.value, "w", 0.0, 400.0).name("sphere intensity");
 
-    deactivate(mode) {
-        super.deactivate(mode);
+        var modelFolder = particleFolder.addFolder("model");
+        modelFolder.add(this.particle, "randomize");
+        modelFolder.add(this.particle.system, "size", 750, 2500);
+
+        setInterval(() => {
+            this.particle.system.step();
+        }, 5000);
+
     }
 
     create(texture, node, width, height) {
@@ -120,10 +124,8 @@ export default class TownStage extends Stage {
         var rotate = Math.random() < 0.5;
         var rotate2 = Math.random() < 0.5;
         if(!rotate) {
-            // building.rotation.set(Math.PI, 0, 0);
             building.rotation.set(Math.PI, 0, rotate2 ? Math.PI : 0);
         } else {
-            // building.rotation.set(Math.PI, 0, Math.PI * 0.5);
             building.rotation.set(Math.PI, 0, rotate2 ? Math.PI * 0.5 : Math.PI * 1.5);
             building.rect.rotate90();
         }
@@ -139,10 +141,6 @@ export default class TownStage extends Stage {
             this.controls.update(dt);
         } else if(this.camera) {
             this.turn(dt);
-        }
-
-        if(this.simulation) {
-            this.simulation.update(dt, t);
         }
 
         if(this.system) {
@@ -167,59 +165,6 @@ export default class TownStage extends Stage {
 
     }
 
-    osc(address, data) {
-        super.osc(address, data);
-
-        switch(address) {
-
-            case "/scene/town/page":
-                var page = parseInt(data[0]);
-                if(page >= 0) {
-                    this.grid.page = this.pages[page];
-                }
-                this.selected = page;
-
-                break;
-
-            case "/scene/town/camera/randomize":
-                this.randomize(data[0] == 1);
-                break;
-
-            case "/scene/town/camera/near":
-                this.randomize(data[0] == 1, true, data[1] == 1);
-                break;
-
-            case "/scene/town/camera/overlook":
-                this.overlook(data[0] == 1);
-                break;
-
-            case "/scene/town/building":
-                this.control.osc(this.page, data);
-                break;
-
-            case "/scene/town/fluid":
-                if(this.simulation) {
-                    this.simulation.osc(data);
-                }
-                break;
-
-            case "/scene/town/grid":
-                if(this.grid) {
-                    this.grid.osc(this.page, data);
-                }
-                break;
-
-            case "/scene/town/particle":
-                if(this.particle) {
-                    this.particle.osc(this.page, data);
-                }
-                break;
-
-
-
-        }
-    }
-
     destroy() {
         super.destroy();
 
@@ -234,10 +179,6 @@ export default class TownStage extends Stage {
             this.scene.remove(this.container);
         }
 
-        if(this.simulation) {
-            this.simulation.dispose();
-        }
-
         if(this.composer) {
             this.composer.renderTarget1.dispose();
             this.composer.renderTarget2.dispose();
@@ -247,36 +188,20 @@ export default class TownStage extends Stage {
     bang(duration, beat = 0) {
 
         if(this.control) {
-            if(this.control.syncAppend) this.control.append(this.page, Math.floor(MathUtil.randomRange(1, 4)));
-            if(this.control.syncGrow) this.control.grow();
-        }
-
-        if(this.simulation && this.simulation.sync) {
-            var circle = MathUtil.randomCircle(0.2, 0.4);
-            this.simulation.bang(circle.x + 0.5, circle.y + 0.5, 0.1, Math.random() * 200 + 200);
-
-            /*
-            if(this.grid) {
-                var r = Math.random();
-                if(r > 0.5) {
-                    this.grid.circle(circle.x + 0.5, circle.y + 0.5, 0.05);
-                } else {
-                    this.grid.wave(10, circle.x + 0.5, circle.y + 0.5, MathUtil.randomRange(-0.05, 0.05), MathUtil.randomRange(-0.05, 0.05), 0.025);
-                }
+            if(this.control.sync && this.control.buildings.length < 100) {
+                this.control.append(this.page, Math.floor(MathUtil.randomRange(1, 3)));
             }
-            */
-
+            this.control.grow();
         }
 
         if(this.grid && this.grid.sync) {
             this.grid.page = this.page;
             this.grid.noise(1.5, 1.5, 1.0);
-            // this.grid.circle(1.0);
         }
 
     }
 
-    randomize(tween = false, near = false, up = false) {
+    randomize(tween = true, near = false, up = false) {
         var dt1 = (Math.random() - 0.5) * Math.PI * 2;
 
         if(
@@ -300,7 +225,7 @@ export default class TownStage extends Stage {
         }
     }
 
-    overlook(tween = false) {
+    overlook(tween = true) {
         var dt1 = (Math.random() - 0.5) * MathUtil.TWO_PI;
 
         if(
@@ -377,8 +302,8 @@ export default class TownStage extends Stage {
             uniforms: {
                 tDiffuse: { type: "t", value: null },
                 tNoise: { type: "t", value: null },
-                t: { type: "f", value: 0.0 },
-                amplitude: { type: "f", value: 0.2 },
+                t: { type: "f", value: 1.0 },
+                amplitude: { type: "f", value: 0.035 },
                 time: { type: "f", value: 0.0 },
                 speed: { type: "f", value: 0.02 },
             },
@@ -396,7 +321,7 @@ export default class TownStage extends Stage {
                 tDiffuse: { type: "t", value: null },
                 blurAmount: { type: "f", value: 1.0 },
                 center: { type: "f", value: 1.0 },
-                stepSize: { type: "f", value: 0.005 },
+                stepSize: { type: "f", value: 0.004 },
             },
             vertexShader: kernel,
             fragmentShader: require("../../shaders/posteffects/tiltshift.frag")
@@ -406,8 +331,8 @@ export default class TownStage extends Stage {
             uniforms: {
                 tDiffuse: { type: "t", value: null },
                 time: { type: "f", value: 0.0 },
-                t: { type: "f", value: 0.0 },
-                intensity: { type: "f", value: 0.01 },
+                t: { type: "f", value: 1.0 },
+                intensity: { type: "f", value: 0.0 },
                 border: { type: "f", value: 0.1 },
                 scale: { type: "v2", value: new THREE.Vector2(1.5, 1.5) },
             },
@@ -428,11 +353,18 @@ export default class TownStage extends Stage {
 
         this.composer.setSize(w, h);
 
-        this.addPostEffect("vignette", vignette);
-        this.addPostEffect("negative", negative);
-        this.addPostEffect("tiltshift", tiltshift);
-        this.addPostEffect("rgbshift", this.rgbShift);
-        this.addPostEffect("wave", this.wave);
+        var postEffectFolder = this.gui.addFolder("post effects");
+        var negativeFolder = postEffectFolder.addFolder("negative");
+        negativeFolder.add(negative.material.uniforms.t, "value", 0.0, 1.0).name("t");
+
+        var rgbShiftFolder = postEffectFolder.addFolder("rgb shift");
+        rgbShiftFolder.add(this.rgbShift.material.uniforms.amplitude, "value", 0.0, 0.4).name("amplitude");
+        rgbShiftFolder.add(this.rgbShift.material.uniforms.speed, "value", 0.0, 1.0).name("speed");
+
+        var waveFolder = postEffectFolder.addFolder("wave");
+        waveFolder.add(this.wave.material.uniforms.intensity, "value", 0.0, 0.5).name("intensity");
+        waveFolder.add(this.wave.material.uniforms.scale.value, "x", 0.0, 3.5).name("scale x");
+        waveFolder.add(this.wave.material.uniforms.scale.value, "y", 0.0, 3.5).name("scale y");
     }
 
     get page() {

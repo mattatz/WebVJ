@@ -274,9 +274,8 @@ export default class Building extends THREE.Object3D {
     }
 
     noise(dt, t) {
-        TWEEN.remove(this.tween);
-
         this.vanishing = true;
+        TWEEN.remove(this.tween);
 
         var p = this.position;
         var px = p.x * 0.5 + t;

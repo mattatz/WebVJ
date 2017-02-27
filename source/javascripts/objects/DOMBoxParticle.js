@@ -1,5 +1,5 @@
 
-import DOMBoxParticleSystem from "../effects/DOMBoxParticleSystem";
+import { DOMBoxParticleMode, DOMBoxParticleSystem } from "../effects/DOMBoxParticleSystem";
 import DOMBoxParticleMesh from "../meshes/DOMBoxParticleMesh";
 
 export default class DOMBoxParticle extends THREE.Object3D {
@@ -93,6 +93,7 @@ export default class DOMBoxParticle extends THREE.Object3D {
     }
 
     randomize() {
+        this.mode = DOMBoxParticleMode.Model;
         this.model = this.another(this.models.map(function(tex, i) { return i; }), this.model);
     }
 

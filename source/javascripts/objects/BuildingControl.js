@@ -6,13 +6,10 @@ export default class BuildingControl extends THREE.Object3D {
 
     constructor() {
         super();
-
         this.buildings = [];
         this.alpha = 1.0;
-        this.syncAppend = false;
-        this.syncGrow = false;
-
-        this.duration = 3000;
+        this.sync = true;
+        this.duration = 1000;
     }
 
     update(dt, t) {
@@ -54,20 +51,12 @@ export default class BuildingControl extends THREE.Object3D {
                 this.destroy();
                 break;
 
-            case "noise":
-                this.noise();
+            case "explode":
+                this.explode();
                 break;
 
             case "surface":
                 this.surface((data[1] == 1));
-                break;
-
-            case "sync":
-                if(data[1] == "append") {
-                    this.syncAppend = (data[2] == 1);
-                } else if(data[1] == "grow") {
-                    this.syncGrow = (data[2] == 1);
-                }
                 break;
 
             case "duration":
@@ -216,7 +205,7 @@ export default class BuildingControl extends THREE.Object3D {
         });
     }
 
-    noise() {
+    explode() {
         this.buildings.forEach((building) => {
             building.noise(0, 0);
         });

@@ -371,31 +371,23 @@ html, body {
   top: 0;
   left: 0; }
 
-#webvj--description {
+#description {
   z-index: 1000;
   position: fixed;
   bottom: 10px;
   left: 10px;
   font-family: Arial, Helvetica, sans-serif; }
-  #webvj--description div {
-    padding: 00px 0px 10px 10px; }
-  #webvj--description .header h1 {
-    display: inline-block;
-    letter-spacing: 1px;
+  #description h1 {
+    text-shadow: 1px 0 0 #fff, -1px 0 0 #fff, 0 1px 0 #fff, 0 -1px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
     color: #333333;
     margin: 0px;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: normal; }
-  #webvj--description .header img {
-    margin-left: 4px;
-    display: inline-block;
-    width: 18px; }
-  #webvj--description .content p {
-    font-size: 15px; }
-  #webvj--description .content a, #webvj--description .profile a {
+  #description a {
+    text-shadow: 1px 0 0 #fff, -1px 0 0 #fff, 0 1px 0 #fff, 0 -1px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
     color: #888888;
     font-size: 15px;
     text-decoration: none;
-    display: inline; }
-    #webvj--description .content a:hover, #webvj--description .profile a:hover {
-      border-bottom: 1px solid #888888; }
+    display: inline;
+    padding-bottom: 2px;
+    border-bottom: solid 1px #888888; }

@@ -1,0 +1,77 @@
+/*
+ * index.scss 
+ */
+
+@import "normalize";
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+#webvj--container {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#webvj--description {
+    z-index: 1000;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    div {
+        padding: 00px 0px 10px 10px;
+    }
+
+    .header {
+        h1 {
+            display: inline-block;
+            letter-spacing: 1px;
+            color: #333333;
+            margin: 0px;
+            font-size: 26px;
+            font-weight: normal;
+        }
+
+        img {
+            margin-left: 4px;
+            display: inline-block;
+            width: 18px;
+            &:hover {
+            }
+        }
+    }
+
+    .content {
+        p {
+            font-size: 15px;
+        }
+    }
+
+    .content, .profile {
+        a {
+            color: #888888;
+            font-size: 15px;
+            text-decoration: none;
+            display: inline;
+
+            &:hover {
+                border-bottom: 1px solid #888888;
+            }
+        }
+    }
+
+    .profile {
+    }
+
+}
+
+

@@ -6,6 +6,7 @@ var notify = require("gulp-notify");
 var path = require("path");
 var glob = require("glob");
 var webserver = require("gulp-webserver");
+var sass = require("gulp-sass");
 
 gulp.task("webpack", function() {
 
@@ -47,6 +48,13 @@ gulp.task("webpack", function() {
         .pipe(gulp.dest("./dist/javascripts"))
         .pipe(notify("webpack task done."));
 
+});
+
+gulp.task("sass", function() {
+    gulp.src("./source/sass/*.scss")
+        .pipe(plumber())
+        .pipe(sass())
+        .pipe(gulp.dest("./dist/css"));
 });
 
 gulp.task("webserver", function() {
