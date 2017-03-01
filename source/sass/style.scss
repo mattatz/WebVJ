@@ -4,16 +4,24 @@
 
 @import "normalize";
 
-* {
+@mixin box-sizing($prop) {
+    -webkit-box-sizing: $prop;
+    -moz-box-sizing: $prop;
+    box-sizing: $prop;
+}
+
+html, body, * {
     margin: 0;
     padding: 0;
+    @include box-sizing(border-box);
 }
 
 html, body {
-    height: 100%;
+    overflow: hidden;
 }
 
 #webvj--container {
+    z-index: 0;
     position: absolute;
     top: 0;
     left: 0;
