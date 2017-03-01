@@ -11,7 +11,6 @@ export default class Stage {
         this.effects = {};
 
         this.indicator = document.getElementById("webvj--indicator");
-
         this.gui = new dat.GUI();
 
         /*
