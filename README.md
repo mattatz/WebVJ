@@ -18,10 +18,10 @@ This was performed at [Beyond Code #3](https://www.super-deluxe.com/room/4258/).
 
 ## Sources
 
-- Wikipedia - wikipedia.org
+- Wikipedia - https://en.wikipedia.org/wiki/Main_Page
 - Github - https://github.com
 - Amazon - https://www.amazon.co.jp
 - ヤフオク！ - http://auctions.yahoo.co.jp/
 - Foursquare - https://ja.foursquare.com/v/クルンサイアム-六本木店/4b5fc1bdf964a520aecb29e3
-- Beyond Code #3 | yoppa.org - yoppa.org/beyondcode3
+- Beyond Code #3 | yoppa.org - http://yoppa.org/beyondcode3
 
