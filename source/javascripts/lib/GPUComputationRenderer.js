@@ -134,7 +134,8 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
 			wrapT: options.wrapT || null,
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
-            type: options.type || THREE.FloatType
+            // type: options.type || THREE.FloatType
+            type: options.type || THREE.HalfFloatType
 		};
 
 		this.variables.push( variable );

@@ -60,7 +60,7 @@ gulp.task("sass", function() {
 gulp.task("webserver", function() {
     gulp.src(".")
         .pipe(webserver({
-            host: "localhost",
+            host: "0.0.0.0",
             port: "4567",
             livereload: true
         }));
