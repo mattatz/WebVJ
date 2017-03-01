@@ -375,6 +375,23 @@ html, body {
   top: 0;
   left: 0; }
 
+#webvj--indicator {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  text-align: center; }
+  #webvj--indicator img {
+    z-index: 100;
+    position: relative;
+    width: 100px;
+    height: 100px;
+    top: 50%;
+    -moz-transform: translateY(-60%);
+    -o-transform: translateY(-60%);
+    -ms-transform: translateY(-60%);
+    -webkit-transform: translateY(-60%);
+    transform: translateY(-60%); }
+
 #webvj--description {
   z-index: 1000;
   position: fixed;

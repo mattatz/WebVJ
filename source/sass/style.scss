@@ -10,6 +10,15 @@
     box-sizing: $prop;
 }
 
+// generic transform
+@mixin transform($transforms) {
+	   -moz-transform: $transforms;
+	     -o-transform: $transforms;
+	    -ms-transform: $transforms;
+	-webkit-transform: $transforms;
+            transform: $transforms;
+}
+
 html, body, * {
     margin: 0;
     padding: 0;
@@ -25,6 +34,24 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
+}
+
+#webvj--indicator {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+
+    img {
+        z-index: 100;
+        position: relative;
+        width: 100px;
+        height: 100px;
+
+        top: 50%;
+        // transform: translateY(-60%);
+        @include transform(translateY(-60%));
+    }
 }
 
 #webvj--description {

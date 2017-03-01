@@ -50,6 +50,7 @@ export default class TownStage extends Stage {
         Promise.all(pathes.map((path) => {
             return this.load(path);
         })).then((pages) => {
+            this.hideIndicator();
             this.createScene(window.innerWidth, window.innerHeight);
             this.init(pages);
         });

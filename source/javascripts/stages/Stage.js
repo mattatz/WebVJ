@@ -10,6 +10,8 @@ export default class Stage {
 
         this.effects = {};
 
+        this.indicator = document.getElementById("webvj--indicator");
+
         this.gui = new dat.GUI();
 
         /*
@@ -136,8 +138,11 @@ export default class Stage {
                 }
             };
             xhr.send();
-
         });
+    }
+
+    hideIndicator() {
+        this.indicator.style.display = "none";
     }
 
 }
