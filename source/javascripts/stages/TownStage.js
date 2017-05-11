@@ -29,9 +29,23 @@ export default class TownStage extends Stage {
         var folder = this.gui.addFolder("camera");
         folder.add(this, "randomize");
 
-        setInterval(() => {
-            this.randomize(false);
-        }, 5000);
+        let id;
+        let interval = () => {
+            if(id != null) {
+                clearInterval(id);
+            }
+            id = setInterval(() => {
+                this.randomize(false);
+            }, 5000);
+        };
+        interval();
+        folder.add({ interval: true }, "interval").onChange((flag) => {
+            if(flag) {
+                interval();
+            } else {
+                clearInterval(id);
+            }
+        });
 
         folder.add(this, "overlook");
         folder.add(this.polar, "radius", 100, 8000).name("distance");
@@ -274,7 +288,6 @@ export default class TownStage extends Stage {
         this.composer = new THREE.EffectComposer(this.renderer);
 
         var rpass = new THREE.RenderPass(this.scene, this.camera);
-        var smaa = new THREE.SMAAPass(w, h);
 
         var kernel = require("../../shaders/posteffects/kernel.vert");
 
@@ -342,7 +355,6 @@ export default class TownStage extends Stage {
         });
 
         this.composer.addPass(rpass);
-        this.composer.addPass(smaa);
         this.composer.addPass(vignette);
         this.composer.addPass(negative);
         this.composer.addPass(this.rgbShift);
@@ -352,7 +364,7 @@ export default class TownStage extends Stage {
         var passes = this.composer.passes;
         passes[passes.length - 1].renderToScreen = true;
 
-        this.composer.setSize(w, h);
+        this.composer.setSize(w * 2, h * 2);
 
         var postEffectFolder = this.gui.addFolder("post effects");
         var negativeFolder = postEffectFolder.addFolder("negative");
@@ -384,7 +396,7 @@ export default class TownStage extends Stage {
         }
 
         if(this.composer) {
-            this.composer.setSize(w, h);
+            this.composer.setSize(w * 2, h * 2);
         }
     }
 

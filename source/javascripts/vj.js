@@ -15,7 +15,8 @@ export default class VJ {
         this.clock = new THREE.Clock()
 
         this.renderer = new THREE.WebGLRenderer({
-            alpha: true
+            alpha: true,
+            antialias: true
         });
         var container = this.createContainer();
         this.renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
