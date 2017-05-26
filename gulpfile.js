@@ -1,58 +1,56 @@
-var gulp = require("gulp");
-var webpack = require("gulp-webpack");
-var babel = require("gulp-babel");
-var plumber = require("gulp-plumber");
-var notify = require("gulp-notify");
-var path = require("path");
-var glob = require("glob");
-var webserver = require("gulp-webserver");
-var sass = require("gulp-sass");
+const gulp = require("gulp");
+const $ = require("gulp-load-plugins")();
+const webpack = require("webpack");
+const babel = require("gulp-babel");
+const path = require("path");
+const webserver = require("gulp-webserver");
+const sass = require("gulp-sass");
 
 gulp.task("webpack", function() {
+    const source = "./source/javascripts/vj.js";
+    const config = {
+        entry : source,
+        watch : true,
+        output : { 
+            filename: "[name].js"
+        }, 
+        resolve : {
+            root : [path.join(__dirname, "bower_components")],
+            extensions : ["", ".js"],
 
-    var source = "./source/javascripts/vj.js";
-    gulp.src(source)
-        .pipe(plumber())
-        .pipe(webpack({
-            entry : source,
-            output : { 
-                filename: "[name].js"
-            }, 
-            resolve : {
-                root : [path.join(__dirname, "bower_components")],
-                extensions : ["", ".js"],
-
-                alias : {
-                    threejs : "threejs/build/three.min.js",
-                    "dat-gui" : "dat-gui/build/dat.gui.min.js"
-                }
-            },
-            plugins : [],
-            module : {
-                loaders : [
-                    { test: /\.(glsl|frag|vert)$/, loader: 'raw', exclude: /node_modules/ },
-                    { test: /\.(glsl|frag|vert)$/, loader: 'glslify', exclude: /node_modules/ },
-                    { 
-                        test: /\.js$/, 
-                        exclude: /node_modules/, 
-                        loader: "babel", 
-                        query:{
-                            presets: ["es2015"],
-                            compact: false
-                        }
-                    },
-                    { test:"/\.json$/", loader: "json" }
-                ]
+            alias : {
+                threejs : "threejs/build/three.min.js",
+                "dat-gui" : "dat-gui/build/dat.gui.min.js"
             }
-        }))
-        .pipe(gulp.dest("./dist/javascripts"))
-        .pipe(notify("webpack task done."));
+        },
+        plugins : [],
+        module : {
+            loaders : [
+                { test: /\.(glsl|frag|vert)$/, loader: 'raw', exclude: /node_modules/ },
+                { test: /\.(glsl|frag|vert)$/, loader: 'glslify', exclude: /node_modules/ },
+                { 
+                    test: /\.js$/, 
+                    exclude: /node_modules/, 
+                    loader: "babel", 
+                    query:{
+                        presets: ["es2015"],
+                        compact: false
+                    }
+                },
+                { test:"/\.json$/", loader: "json" }
+            ]
+        }
+    };
 
+    return gulp.src(source)
+        .pipe($.plumber())
+        .pipe($.webpack(config))
+        .pipe(gulp.dest("./dist/javascripts"));
 });
 
 gulp.task("sass", function() {
     gulp.src("./source/sass/*.scss")
-        .pipe(plumber())
+        .pipe($.plumber())
         .pipe(sass())
         .pipe(gulp.dest("./dist/css"));
 });
@@ -66,9 +64,5 @@ gulp.task("webserver", function() {
         }));
 });
 
-gulp.task("watch", function() {
-    gulp.watch(["./source/javascripts/*.js", "./source/javascripts/*/*.js", "./source/shaders/*", "./source/shaders/*/*", "./source/shaders/*/*/*"], ["webpack"]);
-});
-
-gulp.task("default", ["webpack", "watch"]);
+gulp.task("default", ["webpack", "webserver"]);
 
