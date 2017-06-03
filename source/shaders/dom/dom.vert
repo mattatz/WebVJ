@@ -92,7 +92,7 @@ void main() {
     pos.xyz = noise(pos.xyz);
 
     vec4 world = modelMatrix * vec4(pos, 1.0);
-    gl_Position = projectionMatrix * viewMatrix * world;
+    gl_Position = projectionMatrix * (viewMatrix * world);
 
     vPosition = world.xyz;
     vUv = uv;

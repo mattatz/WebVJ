@@ -44,7 +44,7 @@ void main() {
     float size = scale * smoothstep(0.0, 0.2, pos.w) * smoothstep(1.0, 0.8, pos.w);
     vec3 p = rotate_vector(position, rot) * size + pos.xyz;
     vec4 world = modelMatrix * vec4(p, 1.0);
-    gl_Position = projectionMatrix * viewMatrix * world;
+    gl_Position = projectionMatrix * (viewMatrix * world);
 
     vUv = uv;
     vUnit = unit;

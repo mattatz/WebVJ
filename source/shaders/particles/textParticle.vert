@@ -42,7 +42,7 @@ void main() {
     float size = smoothstep(0.0, 0.2, pos.w) * smoothstep(1.0, 0.8, pos.w);
     vec3 p = rotate_vector(position, rot) * size;
     p += pos.xyz;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+    gl_Position = projectionMatrix * (modelViewMatrix * vec4(p, 1.0));
 
     vUv = uv;
     vColor = color;

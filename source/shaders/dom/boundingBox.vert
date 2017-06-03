@@ -60,7 +60,7 @@ void main() {
     vec3 pos = position;
     pos.xyz = mix(get(from), get(to), t);
     pos.xyz = noise(pos);
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+    gl_Position = projectionMatrix * (modelViewMatrix * vec4(pos, 1.0));
     vec4 lifetime = texture2D(textureLifetime, uv);
 
     float l = lifetime.x;

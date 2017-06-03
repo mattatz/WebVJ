@@ -21,6 +21,6 @@ void main() {
     pos.z -= clamp(pressure, -10.0, 10.0);
 
     vec4 world = modelMatrix * vec4(pos, 1.0);
-    gl_Position = projectionMatrix * viewMatrix * world;
+    gl_Position = projectionMatrix * (viewMatrix * world);
 }
 

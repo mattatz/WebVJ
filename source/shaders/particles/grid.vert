@@ -32,7 +32,7 @@ void main() {
     pos.z += h * flag;
 
     vec4 world = modelMatrix * vec4(pos, 1.0);
-    gl_Position = projectionMatrix * viewMatrix * world;
+    gl_Position = projectionMatrix * (viewMatrix * world);
 
     vPosition = world.xyz;
     vUv = uv2 * vec2(uvScale, 1.0);
