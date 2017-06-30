@@ -3,8 +3,9 @@ WebVJ
 
 ![1](https://raw.githubusercontent.com/mattatz/WebVJ/master/captures/WebVJ_1.gif)
 
-WebVJ uses a web page structure as visual effects.
-This was performed at [Beyond Code #3](https://www.super-deluxe.com/room/4258/).
+WebVJ is a webgl experiment that uses web page structures as part of its visual effects.
+
+This was performed as VJing at [Beyond Code #3](https://www.super-deluxe.com/room/4258/).
 
 ## Demo
 

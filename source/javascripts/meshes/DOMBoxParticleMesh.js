@@ -62,9 +62,8 @@ const build = (pages, nodes, sideCount = 128) => {
             uv.push(offset.x + scale.x, 1.0 - (offset.y + scale.y));
             uv.push(offset.x, 1.0 - (offset.y + scale.y));
 
-            var u = (x + 0.5) * inv;
-            var v = (y + 0.5) * inv;
-
+            var u = x * inv;
+            var v = y * inv;
             for(var i = 0; i < 8; i++) {
                 uv2.push(u, v);
             }
